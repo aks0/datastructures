@@ -61,8 +61,68 @@ public class BST {
     }
   }
 
+  /**
+   * <a href="https://www.geeksforgeeks.org/convert-a-binary-tree-to-a-circular-doubly-link-list/">
+   *   Question</a>
+   * @return
+   */
+  public BSTNode toDoublyLinkedList() {
+    return toDoublyLinkedListInternal(root);
+  }
+
+  private BSTNode toDoublyLinkedListInternal(BSTNode node) {
+    if (node == null) {
+      return null;
+    }
+
+    BSTNode prevListStart = null;
+    BSTNode nextListStart = null;
+    if (node.getLeft() != null) {
+      prevListStart = toDoublyLinkedListInternal(node.getLeft());
+    }
+
+    if (node.getRight() != null) {
+      nextListStart = toDoublyLinkedListInternal(node.getRight());
+    }
+
+    node.setLeft(node);
+    node.setRight(node);
+
+    if (prevListStart == null) {
+      prevListStart = node;
+    }
+
+    if (prevListStart.getLeft() != null) {
+      prevListStart.getLeft().setRight(node);
+      node.setLeft(prevListStart.getLeft());
+
+      prevListStart.setLeft(node);
+      node.setRight(prevListStart);
+    }
+
+    if (nextListStart == null) {
+      return prevListStart;
+    }
+
+    BSTNode lastNode = nextListStart.getLeft();
+
+    prevListStart.getLeft().setRight(nextListStart);
+    nextListStart.setLeft(prevListStart.getLeft());
+
+    prevListStart.setLeft(lastNode);
+    lastNode.setRight(prevListStart);
+
+    return prevListStart;
+  }
+
   public static void main(String args[]) {
     BST bst = BST.newBST();
     bst.inOrderTraversal();
+
+    System.out.println();
+    System.out.print("List: ");
+
+    BSTNode listStart = bst.toDoublyLinkedList();
+    listStart.visitList();
   }
 }

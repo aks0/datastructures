@@ -35,4 +35,12 @@ public class BSTNode {
   public void visit() {
     System.out.print(value + " ");
   }
+
+  public void visitList() {
+    BSTNode node = this;
+    do {
+      node.visit();
+      node = node.right;
+    } while (node != this);
+  }
 }
